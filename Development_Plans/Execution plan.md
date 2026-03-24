@@ -389,6 +389,58 @@ Changing a task to "already known" triggers an optimization suggestion. The sugg
 
 ---
 
+## Phase 4.5: Task Chat System
+
+**Goal:** Each task gets its own persistent chat conversation with an AI assistant. The task's full context (title, description, rationale, completion criteria, dependencies, milestone, goal) is pre-loaded into the conversation so the AI has immediate context. Think of it as a terminal per task.
+
+**Duration:** 1–2 sessions
+
+### Concept
+
+When a user clicks into a task, they can open a chat panel. The chat:
+- Pre-loads the task's full context (title, description, rationale, completion criteria, effort estimate, dependencies, parent milestone, parent goal constraints)
+- Maintains a persistent conversation history scoped to that task
+- Allows the user to ask questions, get help, brainstorm approaches, or request modifications
+- Can trigger task mutations (status changes, editing fields) through the conversation
+- Each task's chat is independent — switching tasks switches the conversation context
+
+### Data Model
+
+```sql
+create table task_conversations (
+  id uuid primary key default gen_random_uuid(),
+  task_id uuid references tasks(id) on delete cascade,
+  messages jsonb not null default '[]',
+  created_at timestamptz default now(),
+  updated_at timestamptz default now()
+);
+```
+
+Messages format:
+```json
+[
+  { "role": "system", "content": "...task context..." },
+  { "role": "user", "content": "How should I approach this?" },
+  { "role": "assistant", "content": "Based on the completion criteria..." }
+]
+```
+
+### Tasks
+
+- [ ] Add `task_conversations` table migration
+- [ ] Create chat API route (`POST /api/tasks/[taskId]/chat`)
+- [ ] Build `TaskChat` component (message list + input)
+- [ ] Auto-generate system prompt from task context on first message
+- [ ] Persist conversation history per task
+- [ ] Add chat panel to TaskDetail in Plan View (slide-out or split view)
+- [ ] Support task mutations from chat (e.g., "mark this as done", "change priority to high")
+- [ ] Route chat inference through the local-first inference layer (Ollama by default)
+
+### Definition of Done
+User can open a chat on any task, the AI has full task context, conversation persists across page loads, and switching between tasks shows each task's own conversation.
+
+---
+
 ## Phase 5: Polish and Ship
 
 **Goal:** The app is usable by someone who isn't you. Auth, error handling, onboarding, and deployment are solid.
