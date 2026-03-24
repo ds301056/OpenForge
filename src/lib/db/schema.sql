@@ -1,0 +1,2 @@
+-- TODO: Full database schema (Phase 1)
+-- See Development_Plans/Execution plan.md for complete schema specification
