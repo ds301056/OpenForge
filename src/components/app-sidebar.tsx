@@ -2,7 +2,14 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { InboxIcon, MapIcon, CalendarIcon } from "lucide-react";
+import {
+  HomeIcon,
+  InboxIcon,
+  CalendarDaysIcon,
+  SettingsIcon,
+  MapIcon,
+  TargetIcon,
+} from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
@@ -13,23 +20,30 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  SidebarFooter,
 } from "@/components/ui/sidebar";
+import { useEffect, useState } from "react";
+import type { Goal } from "@/types";
 
 const navItems = [
-  {
-    title: "Goal Inbox",
-    href: "/goals",
-    icon: InboxIcon,
-  },
-  {
-    title: "Today",
-    href: "/today",
-    icon: CalendarIcon,
-  },
+  { title: "Today", href: "/today", icon: HomeIcon },
+  { title: "Goals", href: "/goals", icon: InboxIcon },
+  { title: "Calendar", href: "/calendar", icon: CalendarDaysIcon },
+  { title: "Settings", href: "/settings", icon: SettingsIcon },
 ];
 
 export function AppSidebar() {
   const pathname = usePathname();
+  const [activeGoals, setActiveGoals] = useState<Goal[]>([]);
+
+  useEffect(() => {
+    fetch("/api/goals?status=active")
+      .then((r) => r.json())
+      .then((data) => {
+        if (Array.isArray(data)) setActiveGoals(data);
+      })
+      .catch(() => {});
+  }, []);
 
   return (
     <Sidebar>
@@ -58,7 +72,31 @@ export function AppSidebar() {
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
+
+        {activeGoals.length > 0 && (
+          <SidebarGroup>
+            <SidebarGroupLabel>Active Goals</SidebarGroupLabel>
+            <SidebarGroupContent>
+              <SidebarMenu>
+                {activeGoals.map((goal) => (
+                  <SidebarMenuItem key={goal.id}>
+                    <SidebarMenuButton
+                      render={<Link href={`/plan/${goal.id}`} />}
+                      isActive={pathname === `/plan/${goal.id}`}
+                    >
+                      <TargetIcon className="h-4 w-4" />
+                      <span className="truncate">{goal.title}</span>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                ))}
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+        )}
       </SidebarContent>
+      <SidebarFooter className="px-4 py-2">
+        <p className="text-xs text-muted-foreground">OpenForge v0.1</p>
+      </SidebarFooter>
     </Sidebar>
   );
 }

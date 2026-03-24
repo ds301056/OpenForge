@@ -21,6 +21,11 @@ export async function GET(request: NextRequest) {
     query = query.eq("workspace_id", workspaceId);
   }
 
+  const status = request.nextUrl.searchParams.get("status");
+  if (status) {
+    query = query.eq("status", status);
+  }
+
   const { data, error } = await query;
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });

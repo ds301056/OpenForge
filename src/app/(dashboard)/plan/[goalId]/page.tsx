@@ -1,5 +1,20 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
+import { createClient } from "@supabase/supabase-js";
+import { getGoal, getLatestPlanVersion, getFullPlan } from "@/lib/db/queries";
+import type { Goal, Milestone, Task, Dependency } from "@/types";
+import { PlanViewClient } from "./plan-view-client";
+
+function getServiceClient() {
+  return createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
+  );
+}
+
+export const dynamic = "force-dynamic";
+
+type FullMilestone = Milestone & {
+  tasks: (Task & { dependencies: Dependency[] })[];
+};
 
 export default async function PlanPage({
   params,
@@ -7,24 +22,41 @@ export default async function PlanPage({
   params: Promise<{ goalId: string }>;
 }) {
   const { goalId } = await params;
+  const db = getServiceClient();
+
+  let goal: Goal;
+  try {
+    goal = await getGoal(db, goalId);
+  } catch {
+    return (
+      <div className="max-w-3xl space-y-4">
+        <h1 className="text-2xl font-bold">Goal not found</h1>
+        <p className="text-muted-foreground">
+          This goal does not exist or has been deleted.
+        </p>
+      </div>
+    );
+  }
+
+  let milestones: FullMilestone[] = [];
+  let versionSummary: string | null = null;
+  let versionNumber: number | null = null;
+
+  try {
+    const version = await getLatestPlanVersion(db, goalId);
+    milestones = await getFullPlan(db, version.id);
+    versionSummary = version.summary;
+    versionNumber = version.version_number;
+  } catch {
+    // No plan yet
+  }
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-bold">Plan View</h1>
-        <Badge variant="secondary">Phase 0 - Placeholder</Badge>
-      </div>
-      <Card>
-        <CardHeader>
-          <CardTitle>Plan for Goal: {goalId}</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <p className="text-muted-foreground">
-            This view will display milestones, tasks, dependencies, and status
-            controls for the selected goal&apos;s plan.
-          </p>
-        </CardContent>
-      </Card>
-    </div>
+    <PlanViewClient
+      goal={goal}
+      milestones={milestones}
+      versionSummary={versionSummary}
+      versionNumber={versionNumber}
+    />
   );
 }

@@ -426,6 +426,122 @@ export async function listDecisionLogs(db: SupabaseClient, goalId: string) {
 // Composite queries (fetch full plan tree)
 // ---------------------------------------------------------------------------
 
+export async function getGoalProgress(db: SupabaseClient, goalId: string) {
+  // Get latest plan version, then count task statuses
+  const { data: version } = await db
+    .from("plan_versions")
+    .select("id")
+    .eq("goal_id", goalId)
+    .order("version_number", { ascending: false })
+    .limit(1)
+    .single();
+
+  if (!version) return { total: 0, done: 0, in_progress: 0 };
+
+  const { data: milestones } = await db
+    .from("milestones")
+    .select("id")
+    .eq("plan_version_id", version.id);
+
+  if (!milestones || milestones.length === 0)
+    return { total: 0, done: 0, in_progress: 0 };
+
+  const milestoneIds = milestones.map((m) => m.id);
+  const { data: tasks } = await db
+    .from("tasks")
+    .select("status")
+    .in("milestone_id", milestoneIds);
+
+  if (!tasks) return { total: 0, done: 0, in_progress: 0 };
+
+  return {
+    total: tasks.length,
+    done: tasks.filter(
+      (t) => t.status === "done" || t.status === "skipped" || t.status === "already_known"
+    ).length,
+    in_progress: tasks.filter((t) => t.status === "in_progress").length,
+  };
+}
+
+export async function getUpcomingMilestones(
+  db: SupabaseClient,
+  workspaceId: string,
+  days: number = 7
+) {
+  const cutoff = new Date();
+  cutoff.setDate(cutoff.getDate() + days);
+
+  const { data, error } = await db
+    .from("milestones")
+    .select(
+      `
+      *,
+      plan_versions!inner (
+        goal_id,
+        goals!inner (
+          id, title, workspace_id, status
+        )
+      ),
+      tasks (id, status)
+    `
+    )
+    .lte("target_date", cutoff.toISOString().split("T")[0])
+    .neq("status", "completed")
+    .neq("status", "skipped");
+
+  if (error) throw error;
+
+  // Filter by workspace and active goals
+  return (data ?? []).filter((m: Record<string, unknown>) => {
+    const pv = m.plan_versions as Record<string, unknown>;
+    const goal = pv?.goals as Record<string, unknown>;
+    return goal?.workspace_id === workspaceId && goal?.status === "active";
+  });
+}
+
+export async function getTasksWithContext(
+  db: SupabaseClient,
+  workspaceId: string,
+  filters?: { status?: string; priority?: string }
+) {
+  let query = db.from("tasks").select(
+    `
+    *,
+    milestones!inner (
+      id, title, target_date,
+      plan_versions!inner (
+        id,
+        goals!inner (
+          id, title, workspace_id, status
+        )
+      )
+    ),
+    dependencies:dependencies!task_id (
+      depends_on_task_id,
+      dependency_type
+    )
+  `
+  );
+
+  if (filters?.status) {
+    query = query.eq("status", filters.status);
+  }
+  if (filters?.priority) {
+    query = query.eq("priority", filters.priority);
+  }
+
+  const { data, error } = await query;
+  if (error) throw error;
+
+  // Filter by workspace and active goals
+  return (data ?? []).filter((t: Record<string, unknown>) => {
+    const m = t.milestones as Record<string, unknown>;
+    const pv = m?.plan_versions as Record<string, unknown>;
+    const goal = pv?.goals as Record<string, unknown>;
+    return goal?.workspace_id === workspaceId && goal?.status === "active";
+  });
+}
+
 export async function getFullPlan(db: SupabaseClient, planVersionId: string) {
   const { data: milestones, error: mError } = await db
     .from("milestones")
