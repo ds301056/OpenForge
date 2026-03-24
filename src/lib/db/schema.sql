@@ -1,2 +1,3 @@
--- TODO: Full database schema (Phase 1)
--- See Development_Plans/Execution plan.md for complete schema specification
+-- This is a reference copy of the schema.
+-- The canonical migration lives at supabase/migrations/00001_initial_schema.sql
+-- See that file for the full schema definition.

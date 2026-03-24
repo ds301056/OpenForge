@@ -12,15 +12,15 @@ This is the real build plan. Not aspirational — sequential. Each phase has con
 
 ### Tasks
 
-- [ ] Initialize Next.js 15 project with TypeScript, Tailwind, App Router
-- [ ] Install and configure shadcn/ui
-- [ ] Set up Supabase project (or local Supabase CLI for development)
-- [ ] Configure environment variables (`.env.example` with all expected keys)
-- [ ] Create the full directory structure from README (empty files with TODO comments are fine — the point is the shape exists)
-- [ ] Set up ESLint + Prettier config
-- [ ] Add a basic GitHub Actions CI workflow (lint + type check + build)
-- [ ] Create stub `page.tsx` files for all three views (Goal Inbox, Plan View, Today View) with placeholder UI
-- [ ] Wire up basic layout with sidebar navigation between views
+- [x] Initialize Next.js 15 project with TypeScript, Tailwind, App Router
+- [x] Install and configure shadcn/ui
+- [x] Set up Supabase project (or local Supabase CLI for development)
+- [x] Configure environment variables (`.env.example` with all expected keys)
+- [x] Create the full directory structure from README (empty files with TODO comments are fine — the point is the shape exists)
+- [x] Set up ESLint + Prettier config
+- [x] Add a basic GitHub Actions CI workflow (lint + type check + build)
+- [x] Create stub `page.tsx` files for all three views (Goal Inbox, Plan View, Today View) with placeholder UI
+- [x] Wire up basic layout with sidebar navigation between views
 - [ ] Deploy to Vercel (even if it's just placeholder pages)
 
 ### Definition of Done
@@ -36,18 +36,18 @@ You can navigate between three stub views in a deployed app. CI passes. Database
 
 ### Tasks
 
-- [ ] Write the full SQL schema (see below for exact specification)
-- [ ] Create Supabase migration files
-- [ ] Run migrations against dev database
-- [ ] Build typed query layer (`lib/db/queries.ts`) using Supabase client
-  - [ ] CRUD for `goals`
-  - [ ] CRUD for `milestones` (scoped to plan version)
-  - [ ] CRUD for `tasks` (scoped to milestone)
-  - [ ] Create/read for `plan_versions` (immutable — no update)
-  - [ ] CRUD for `suggestions`
-  - [ ] Create/read for `decision_log` (immutable — audit trail)
-  - [ ] Read for `dependencies`
-- [ ] Add seed data script with one example goal + plan for development
+- [x] Write the full SQL schema (see below for exact specification)
+- [x] Create Supabase migration files
+- [x] Run migrations against dev database
+- [x] Build typed query layer (`lib/db/queries.ts`) using Supabase client
+  - [x] CRUD for `goals`
+  - [x] CRUD for `milestones` (scoped to plan version)
+  - [x] CRUD for `tasks` (scoped to milestone)
+  - [x] Create/read for `plan_versions` (immutable — no update)
+  - [x] CRUD for `suggestions`
+  - [x] Create/read for `decision_log` (immutable — audit trail)
+  - [x] Read for `dependencies`
+- [x] Add seed data script with one example goal + plan for development
 - [ ] Verify with a test page that reads and displays seeded data
 
 ### Database Schema — Exact Specification

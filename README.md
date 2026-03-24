@@ -274,9 +274,15 @@ openforge/
 │   └── CONTRIBUTING.md
 │
 ├── .env.example
+├── .github/
+│   └── workflows/
+│       └── ci.yml                   # Lint + type check + build
 ├── .gitignore
+├── .prettierrc
+├── components.json                  # shadcn/ui config
+├── eslint.config.mjs
 ├── next.config.ts
-├── tailwind.config.ts
+├── postcss.config.mjs
 ├── tsconfig.json
 ├── package.json
 └── README.md
@@ -300,8 +306,8 @@ openforge/
 
 ```bash
 # Clone the repo
-git clone https://github.com/your-org/openforge.git
-cd openforge
+git clone https://github.com/ds301056/OpenForge.git
+cd OpenForge
 
 # Install dependencies
 pnpm install
@@ -406,7 +412,7 @@ Templates are the most impactful thing you can contribute. A good template encod
 
 | Layer | Technology |
 |---|---|
-| Framework | Next.js 15 (App Router) |
+| Framework | Next.js 16 (App Router) |
 | Language | TypeScript |
 | Database | Supabase (Postgres) |
 | Styling | Tailwind CSS |
