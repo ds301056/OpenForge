@@ -70,7 +70,7 @@ export async function expand(
   classification: ClassificationResult,
   template: DomainTemplate
 ): Promise<ExpandedPlan> {
-  const provider = getProviderForStep("expand");
+  const { provider } = await getProviderForStep("expand");
   const system = buildSystemPrompt(template);
 
   const expandedMilestones: ExpandedMilestone[] = [];

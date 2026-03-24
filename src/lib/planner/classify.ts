@@ -48,7 +48,7 @@ export async function classify(
   context: PipelineContext,
   template: DomainTemplate
 ): Promise<ClassificationResult> {
-  const provider = getProviderForStep("classify");
+  const { provider } = await getProviderForStep("classify");
   const system = buildSystemPrompt(template);
   const prompt = buildPrompt(context);
 

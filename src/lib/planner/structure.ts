@@ -58,7 +58,7 @@ export async function structure(
   classification: ClassificationResult,
   template: DomainTemplate
 ): Promise<PlanStructure> {
-  const provider = getProviderForStep("structure");
+  const { provider } = await getProviderForStep("structure");
   const system = buildSystemPrompt(template);
   const prompt = buildPrompt(classification);
 

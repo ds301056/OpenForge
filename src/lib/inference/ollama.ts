@@ -14,13 +14,15 @@ const DEFAULT_MODELS: Record<string, string> = {
 export class OllamaProvider implements InferenceProvider {
   name = "ollama";
   private baseUrl: string;
+  private modelOverride: string | null;
 
-  constructor(baseUrl?: string) {
+  constructor(baseUrl?: string, modelOverride?: string) {
     this.baseUrl = baseUrl ?? process.env.OLLAMA_BASE_URL ?? "http://localhost:11434";
+    this.modelOverride = modelOverride ?? null;
   }
 
   async generate(request: InferenceRequest): Promise<InferenceResponse> {
-    const model = DEFAULT_MODELS[request.step] ?? "llama3.2";
+    const model = this.modelOverride ?? DEFAULT_MODELS[request.step] ?? "llama3.2";
 
     const response = await fetch(`${this.baseUrl}/api/generate`, {
       method: "POST",
