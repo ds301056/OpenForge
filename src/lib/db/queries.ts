@@ -434,7 +434,7 @@ export async function getFullPlan(db: SupabaseClient, planVersionId: string) {
       *,
       tasks (
         *,
-        dependencies (*)
+        dependencies:dependencies!task_id (*)
       )
     `
     )
