@@ -300,26 +300,26 @@ All 5 test goals produce valid, structured plans that you would actually want to
 ### Tasks
 
 #### Goal Inbox
-- [ ] New Goal form: title, description, template selector (only "Learning Plan" for now), optional constraint fields (timeline, skill level, time commitment)
-- [ ] Goal list view: cards showing title, status, template, created date
-- [ ] "Generate Plan" button that triggers the planner pipeline
-- [ ] Loading state during plan generation (this takes 15–60 seconds — needs good UX)
-- [ ] Error handling if plan generation fails
+- [x] New Goal form: title, description, template selector (only "Learning Plan" for now), optional constraint fields (timeline, skill level, time commitment)
+- [x] Goal list view: cards showing title, status, template, created date
+- [x] "Generate Plan" button that triggers the planner pipeline
+- [x] Loading state during plan generation (this takes 15–60 seconds — needs good UX)
+- [x] Error handling if plan generation fails
 
 #### Plan View
-- [ ] Fetch and display plan for a given goal
-- [ ] Milestone cards in order, expandable to show tasks
-- [ ] Task rows showing: title, status, effort estimate, priority
-- [ ] Task detail panel (click to expand): description, rationale, completion criteria, dependencies
-- [ ] Status change controls: todo → in_progress → done / skipped / already_known
+- [x] Fetch and display plan for a given goal
+- [x] Milestone cards in order, expandable to show tasks
+- [x] Task rows showing: title, status, effort estimate, priority
+- [x] Task detail panel (click to expand): description, rationale, completion criteria, dependencies
+- [x] Status change controls: todo → in_progress → done / skipped / already_known
 - [ ] Task edit: inline editing of title, description, priority
 - [ ] Task lock toggle (prevent optimizer from modifying)
-- [ ] Visual dependency indicators (which tasks are blocked by incomplete dependencies)
+- [x] Visual dependency indicators (which tasks are blocked by incomplete dependencies)
 
 #### Today View (Minimal v1)
-- [ ] Query: across all active goals, find the highest-priority unblocked task
-- [ ] Display: the recommended next task with its rationale and context (which goal, which milestone)
-- [ ] "Why this task?" explanation based on priority + dependency position + milestone progress
+- [x] Query: across all active goals, find the highest-priority unblocked task
+- [x] Display: the recommended next task with its rationale and context (which goal, which milestone)
+- [x] "Why this task?" explanation based on priority + dependency position + milestone progress
 
 ### UI/UX Notes
 - Use shadcn/ui for all components (consistent, accessible, fast to build)
@@ -341,47 +341,47 @@ You can create a goal, generate a plan, view it, change task statuses, and see a
 ### Tasks
 
 #### Event System
-- [ ] Define the 5 trigger events as typed constants
-- [ ] Hook task status changes to fire trigger events
-- [ ] Each trigger passes context: which task, what changed, current plan state
+- [x] Define the 5 trigger events as typed constants
+- [x] Hook task status changes to fire trigger events
+- [x] Each trigger passes context: which task, what changed, current plan state
 
 #### Optimization Strategies
-- [ ] **Task Completed Strategy**
+- [x] **Task Completed Strategy**
   - Unlock dependent tasks (change from blocked → todo)
   - Check if milestone is complete (all tasks done/skipped)
   - Recalculate pacing: if ahead of schedule, can suggest compressing timeline; if behind, suggest deprioritization
-- [ ] **Task Blocked Strategy**
+- [x] **Task Blocked Strategy**
   - Identify the blocker (dependency that's not done)
   - Suggest resequencing: can another task be done first?
   - Suggest breaking the blocker into smaller pieces
-- [ ] **Already Known Strategy**
+- [x] **Already Known Strategy**
   - Remove the task and its practice companion
   - Check if this changes the milestone structure (can milestones be merged?)
   - Reassess downstream tasks that assumed the user didn't know this
   - Potentially accelerate the timeline
-- [ ] **Deadline Changed Strategy**
+- [x] **Deadline Changed Strategy**
   - Rebalance effort across milestones
   - Flag milestones that are now at risk
   - Suggest scope reduction if timeline compressed, or depth increase if extended
-- [ ] **Priority Reordered Strategy**
+- [x] **Priority Reordered Strategy**
   - Resequence tasks respecting new priority order + existing hard dependencies
   - Flag conflicts (user wants X first but Y is a prerequisite)
 
 #### Suggestion System
-- [ ] Suggestion builder: takes strategy output and produces a `Suggestion` record
-- [ ] Suggestion persistence in database
-- [ ] Suggestion API endpoint: fetch pending suggestions for a goal
+- [x] Suggestion builder: takes strategy output and produces a `Suggestion` record
+- [x] Suggestion persistence in database
+- [x] Suggestion API endpoint: fetch pending suggestions for a goal
 
 #### Suggestion UI
-- [ ] Suggestion card component: shows trigger, proposed change, justification, confidence
+- [x] Suggestion card component: shows trigger, proposed change, justification, confidence
 - [ ] Diff view: what the plan looks like before vs after the suggestion
-- [ ] Approve button: applies the change, creates new plan version, logs decision
-- [ ] Reject button: marks suggestion as rejected, logs decision with optional reason
+- [x] Approve button: applies the change, creates new plan version, logs decision
+- [x] Reject button: marks suggestion as rejected, logs decision with optional reason
 - [ ] Edit button: opens the proposed change for modification before applying
 
 #### Plan Versioning
 - [ ] On suggestion approval: create new `plan_version`, copy milestones/tasks with the change applied
-- [ ] Version history view: list of versions with trigger summaries
+- [x] Version history view: list of versions with trigger summaries
 - [ ] Diff view between any two versions
 
 ### Definition of Done
