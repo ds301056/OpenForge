@@ -375,12 +375,23 @@ EXPANSION_PROVIDER=anthropic
 - [ ] Template contribution guide
 - [ ] Community template gallery
 
+### v0.5 — GitHub Integration
+- [ ] Export plans as GitHub Issues with milestones, labels, and dependency references
+- [ ] GitHub Projects v2 sync (goal → project)
+- [ ] Import GitHub Issues into OpenForge as structured plans
+- [ ] Bidirectional sync (issue close → task done, and vice versa)
+
+### v0.6 — Task Chat
+- [ ] Per-task AI chat with pre-loaded task context
+- [ ] Persistent conversation history per task
+- [ ] Task mutations from chat ("mark this done", "change priority")
+
 ### v1.0 — Production Ready
 - [ ] Auth (Supabase Auth)
 - [ ] Multi-workspace support
 - [ ] Calendar-aware scheduling
 - [ ] Dependency graph visualization
-- [ ] Export (GitHub Issues, Linear, Markdown)
+- [ ] Export to Linear, Markdown, CSV
 - [ ] Mobile-responsive UI
 
 ### Future

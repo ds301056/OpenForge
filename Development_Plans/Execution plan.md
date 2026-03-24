@@ -441,6 +441,113 @@ User can open a chat on any task, the AI has full task context, conversation per
 
 ---
 
+## Phase 4.6: GitHub Integration
+
+**Goal:** Sync OpenForge plans with GitHub Projects and Issues. Users can push their plan structure into a GitHub repo as issues with sub-tasks, and optionally sync status changes bidirectionally.
+
+**Duration:** 2–3 sessions
+
+### Concept
+
+OpenForge plans map naturally to GitHub's project management primitives:
+
+```
+OpenForge                    GitHub
+─────────                    ──────
+Goal                    →    Project (GitHub Projects v2)
+Milestone               →    Milestone (GitHub Milestones)
+Task                    →    Issue (with labels, assignees)
+Task dependencies       →    Issue references ("blocked by #12")
+Task completion criteria →   Issue checklist / acceptance criteria
+Subtasks                →    Task list items within an issue
+```
+
+### Sync Modes
+
+**1. One-time export** — Push the current plan to GitHub as issues. No ongoing sync. Good for "I planned in OpenForge, now I'll execute in GitHub."
+
+**2. Bidirectional sync** — Status changes in GitHub (closing an issue) reflect in OpenForge, and vice versa. Uses GitHub webhooks. More complex but keeps both systems current.
+
+**3. Import from GitHub** — Pull existing GitHub Issues/Projects into OpenForge as a goal with tasks. Useful for "I have a messy backlog, help me structure it."
+
+### Data Model
+
+```sql
+create table github_connections (
+  id uuid primary key default gen_random_uuid(),
+  workspace_id uuid references workspaces(id) on delete cascade,
+  github_token_encrypted text not null,
+  github_owner text not null,          -- user or org
+  github_repo text,                    -- null = org-level projects
+  default_project_id integer,          -- GitHub Projects v2 ID
+  sync_mode text default 'export'
+    check (sync_mode in ('export', 'bidirectional', 'import')),
+  created_at timestamptz default now()
+);
+
+create table github_sync_mappings (
+  id uuid primary key default gen_random_uuid(),
+  connection_id uuid references github_connections(id) on delete cascade,
+  entity_type text not null            -- 'goal', 'milestone', 'task'
+    check (entity_type in ('goal', 'milestone', 'task')),
+  openforge_id uuid not null,
+  github_issue_number integer,
+  github_project_item_id text,
+  github_milestone_number integer,
+  last_synced_at timestamptz,
+  sync_status text default 'synced'
+    check (sync_status in ('synced', 'pending', 'conflict', 'error')),
+  created_at timestamptz default now()
+);
+```
+
+### Tasks
+
+#### GitHub Connection
+- [ ] OAuth flow for GitHub authentication (or personal access token input)
+- [ ] Store encrypted GitHub token per workspace
+- [ ] GitHub API client wrapper using Octokit
+- [ ] Connection settings UI in Settings page (connect/disconnect, select repo)
+
+#### Export: OpenForge → GitHub
+- [ ] Export goal as GitHub Project (Projects v2 GraphQL API)
+- [ ] Export milestones as GitHub Milestones
+- [ ] Export tasks as GitHub Issues with:
+  - Title, description, completion criteria as checklist
+  - Labels for priority (critical, high, medium, low) and task type (concept, practice, setup, etc.)
+  - Milestone assignment
+  - Dependencies as "Blocked by #N" references in issue body
+  - Effort estimate in issue body or as label
+- [ ] "Export to GitHub" button on Plan View
+- [ ] Sync mapping creation (track which OpenForge entity → which GitHub entity)
+- [ ] Handle re-export (update existing issues vs create new ones)
+
+#### Import: GitHub → OpenForge
+- [ ] Fetch GitHub Issues from a repo or project
+- [ ] Map issues to OpenForge tasks (title, description, status, labels→priority)
+- [ ] Create goal + plan version from imported issues
+- [ ] Group issues by milestone (if milestones exist) or auto-cluster
+
+#### Bidirectional Sync (stretch)
+- [ ] GitHub webhook endpoint (`POST /api/webhooks/github`)
+- [ ] Handle issue close → task status=done
+- [ ] Handle issue reopen → task status=todo
+- [ ] Handle issue label changes → priority/status updates
+- [ ] Conflict resolution when both sides change simultaneously
+- [ ] Sync status indicators in Plan View (synced/pending/conflict icons)
+
+#### UI Components
+- [ ] `GitHubConnectionCard` in Settings — connect, select repo, choose sync mode
+- [ ] `ExportToGitHubDialog` in Plan View — preview what will be created, confirm
+- [ ] `ImportFromGitHubDialog` in Goals — select repo, preview issues, import
+- [ ] `SyncStatusBadge` on tasks — shows if synced, pending, or conflicted
+- [ ] `GitHubLink` on tasks — direct link to the corresponding GitHub issue
+
+### Definition of Done
+User can connect their GitHub account, export a plan as issues to a repo, and see the issues appear in GitHub with correct milestones, labels, and dependencies. Bidirectional sync is a stretch goal.
+
+---
+
 ## Phase 5: Polish and Ship
 
 **Goal:** The app is usable by someone who isn't you. Auth, error handling, onboarding, and deployment are solid.
