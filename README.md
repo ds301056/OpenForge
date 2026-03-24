@@ -1,10 +1,34 @@
 # OpenForge
 
-**An open-source AI planning engine that automatically decomposes large goals into structured, executable plans — then helps you work through them with per-task AI conversations, adaptive replanning, and integrations with the tools you already use.**
+**An open-source AI planning engine that turns vague goals into adaptive, explainable execution plans.**
 
-OpenForge is not a todo list with AI bolted on. You describe what you want to accomplish, and the engine breaks it down into milestones, tasks, dependencies, and reasoning — automatically. Each task gets its own AI conversation context so you can discuss approaches, ask questions, and get help without losing focus. Plans adapt as you work: when you complete something, skip something, or mark something as "I already know this," the system re-evaluates and suggests changes.
+Most todo apps are glorified storage. OpenForge is different — you describe what you want to accomplish, and the system generates a structured plan with milestones, tasks, dependencies, and reasoning. As you work, it watches progress and proposes optimizations. Every suggestion comes with a justification you can approve, reject, or edit.
 
-Everything runs **local-first** on your own hardware via Ollama. Cloud models are optional — used only for review, never required.
+This is not "AI slapped onto a todo list." This is a decomposition and replanning engine with a human-in-the-loop approval model, designed to use local LLMs and optionally call premium models for difficult tasks.
+
+The OpenForge engine exposes API endpoints ensuring compatibility with other open-source frameworks such as [OpenClaw](https://github.com/ds301056), and syncs directly with **GitHub Issues & Projects**, **Linear**, and **Jira** — so your AI-generated plans live where your team already works.
+
+---
+
+## Why OpenForge?
+
+| Pain Point | OpenForge Solution |
+|---|---|
+| "I have a huge goal but don't know where to start" | Automatic decomposition into milestones, tasks, and dependencies |
+| "My tasks lack context — I forget why they exist" | Every task carries rationale, completion criteria, and its own AI chat |
+| "I pay $20/mo for AI features in every tool" | Local-first — runs on Ollama, your hardware, your data, free |
+| "AI plans are generic and useless" | Domain-specific templates encode real expertise (learning, software, game dev) |
+| "My plans don't connect to my actual workflow" | Syncs to GitHub, Linear, Jira — plans become real issues and projects |
+| "AI makes changes I didn't ask for" | Human-in-the-loop — every suggestion requires your approval |
+
+### Built to Integrate
+
+OpenForge isn't a walled garden. It's an engine with an API.
+
+- **GitHub** — Export plans as Issues with milestones, labels, and dependency references. Import existing backlogs for AI-powered restructuring. Bidirectional sync keeps both sides current.
+- **Linear & Jira** — Same sync model. Your plans become real project tickets.
+- **OpenClaw** — Chat-based control via a separate open-source project. "Create a plan for learning Go." "What should I work on today?"
+- **Your tools** — RESTful API for every feature. Build CLI tools, Discord bots, or custom dashboards on top.
 
 ---
 
@@ -14,11 +38,11 @@ Everything runs **local-first** on your own hardware via Ollama. Cloud models ar
 
 **Per-task AI chat.** Every task is its own conversation. Click into "Learn ownership and borrowing" and talk to the AI about it — the task's context (what it is, why it exists, what depends on it, what the goal is) is pre-loaded. Like having a dedicated terminal per task.
 
-**Local-first inference.** The 4-step planning pipeline (classify, structure, expand, validate) runs entirely on local models via Ollama. A 5th optional step sends the finished plan to a cloud model (Claude, Gemini) for review. You can run OpenForge fully offline.
+**Local-first inference.** The planning pipeline runs entirely on local models via Ollama. A 5th optional step sends the finished plan to a cloud model (Claude, Gemini) for review. You can run OpenForge fully offline, fully free.
 
 **Adaptive replanning.** Mark a task as "already known" and the optimizer compresses the plan, reassesses prerequisites, and suggests timeline acceleration. Every change is versioned, justified, and reversible.
 
-**Integration-ready API.** RESTful endpoints for everything — create goals, generate plans, update tasks, fetch recommendations. Built to be consumed by external tools like [OpenClaw](https://github.com/ds301056), CLI tools, or your own automations.
+**Domain templates.** A "learn Rust" plan should look nothing like a "launch a YouTube channel" plan. Templates encode domain-specific heuristics — concept/practice loops for learning, sprint structure for software, asset pipelines for game dev. JSON-first, forkable, community-contributed.
 
 ---
 
