@@ -6,7 +6,7 @@ Most todo apps are glorified storage. OpenForge is different — you describe wh
 
 This is not "AI slapped onto a todo list." This is a decomposition and replanning engine with a human-in-the-loop approval model, designed to use local LLMs and optionally call premium models for difficult tasks.
 
-The OpenForge engine exposes API endpoints ensuring compatibility with other open-source frameworks such as [OpenClaw](https://github.com/ds301056), and syncs directly with **GitHub Issues & Projects**, **Linear**, and **Jira** — so your AI-generated plans live where your team already works.
+The OpenForge engine exposes API endpoints ensuring compatibility with other open-source frameworks such as [OpenClaw](https://github.com/openclaw/openclaw), and syncs directly with **GitHub Issues & Projects**, **Linear**, and **Jira** — so your AI-generated plans live where your team already works.
 
 ---
 
@@ -177,7 +177,7 @@ OpenForge is designed to work with the tools you already use, not replace them.
 - Same sync model as GitHub — export plans, import backlogs, bidirectional status sync
 
 ### OpenClaw
-[OpenClaw](https://github.com/ds301056) is a separate project that uses OpenForge's API for chat-based plan control — "create a plan for learning Go," "what should I work on today," "mark my current task as done."
+[OpenClaw](https://github.com/openclaw/openclaw) is a separate project that uses OpenForge's API for chat-based plan control — "create a plan for learning Go," "what should I work on today," "mark my current task as done."
 
 ### API
 Every feature is accessible via REST endpoints:
