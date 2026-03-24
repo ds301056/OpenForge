@@ -200,14 +200,14 @@ Migrations run. Seed data loads. A test page renders goal → milestones → tas
 ### Tasks
 
 #### Step 1: Type Definitions
-- [ ] Define TypeScript types for the planner pipeline I/O:
+- [x] Define TypeScript types for the planner pipeline I/O:
   - `ClassificationResult` — domain, constraints, ambiguities, skill_level
   - `PlanStructure` — milestones with descriptions and ordering
   - `ExpandedPlan` — full plan with tasks, dependencies, rationale per task
   - `ValidationResult` — pass/fail with list of violations
 
 #### Step 2: Learning Plan Template
-- [ ] Implement `templates/learning-plan.ts` with:
+- [x] Implement `templates/learning-plan.ts` with:
   - Classification hints (what constraints matter: time commitment per week, current skill level, learning style, target proficiency)
   - Structural rules:
     - Milestones should be 1–2 weeks max
@@ -227,7 +227,7 @@ Migrations run. Seed data loads. A test page renders goal → milestones → tas
     - At least one capstone/project task in the plan
 
 #### Step 3: Classify Step
-- [ ] Implement `planner/classify.ts`
+- [x] Implement `planner/classify.ts`
   - Input: raw goal text + template hints
   - Output: `ClassificationResult`
   - Prompt design: system prompt instructs model to extract structured constraints, identify the domain, and flag what's missing or ambiguous
@@ -235,7 +235,7 @@ Migrations run. Seed data loads. A test page renders goal → milestones → tas
   - This step can use a fast/cheap model
 
 #### Step 4: Structure Step
-- [ ] Implement `planner/structure.ts`
+- [x] Implement `planner/structure.ts`
   - Input: `ClassificationResult` + template structural rules
   - Output: `PlanStructure` (ordered milestones with descriptions, no tasks yet)
   - Prompt design: system prompt includes template rules as hard constraints, classification as context
@@ -243,7 +243,7 @@ Migrations run. Seed data loads. A test page renders goal → milestones → tas
   - Validate milestone count, duration, ordering
 
 #### Step 5: Expand Step
-- [ ] Implement `planner/expand.ts`
+- [x] Implement `planner/expand.ts`
   - Input: `PlanStructure` + `ClassificationResult` + template task heuristics
   - Output: `ExpandedPlan` (milestones with tasks, dependencies, effort, rationale)
   - Prompt design: expand one milestone at a time (better quality than expanding all at once)
@@ -251,7 +251,7 @@ Migrations run. Seed data loads. A test page renders goal → milestones → tas
   - Mid-tier model is fine here
 
 #### Step 6: Validate Step
-- [ ] Implement `planner/validate.ts`
+- [x] Implement `planner/validate.ts`
   - Input: `ExpandedPlan` + template validation constraints
   - Output: `ValidationResult`
   - Pure logic — no LLM call
@@ -260,16 +260,16 @@ Migrations run. Seed data loads. A test page renders goal → milestones → tas
   - If errors exist, trigger one retry of the failing step with violation feedback injected into the prompt
 
 #### Step 7: Pipeline Orchestrator
-- [ ] Implement `planner/index.ts`
+- [x] Implement `planner/index.ts`
   - Chains all four steps
   - Handles the retry loop on validation failure (max 1 retry)
   - Persists the result: creates `plan_version`, `milestones`, `tasks`, `dependencies` in the database
   - Returns the plan ID for the frontend to fetch and display
 
 #### Step 8: Inference Clients
-- [ ] Implement `inference/anthropic.ts` — wraps Anthropic SDK, handles JSON mode
-- [ ] Implement `inference/ollama.ts` — wraps Ollama HTTP API, same interface
-- [ ] Implement `inference/router.ts` — reads config, selects provider per step
+- [x] Implement `inference/anthropic.ts` — wraps Anthropic SDK, handles JSON mode
+- [x] Implement `inference/ollama.ts` — wraps Ollama HTTP API, same interface
+- [x] Implement `inference/router.ts` — reads config, selects provider per step
 - [ ] (OpenAI client is a stretch goal — Anthropic + Ollama is enough for v1)
 
 ### Testing Approach
